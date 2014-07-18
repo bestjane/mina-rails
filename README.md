@@ -1,26 +1,36 @@
-# Mina + Rails + Unicorn + nginx
+# Mina Rails
 ======================================
 Environment
 ---
 [Ubuntu Server 12.04](http://releases.ubuntu.com/12.04/)
+
 [git](https://github.com/git/git)
+
 [rvm](https://github.com/wayneeseguin/rvm)
+
 [rails](https://github.com/rails/rails)
+
 [unicorn](http://unicorn.bogomips.org/)
+
 [nginx](http://wiki.nginx.org/Main)
-[nodejs](http://nodejs.org/) #to precompile assests#
+
+[nodejs](http://nodejs.org/)  precompile assests
+
 ```bash
 # do not use nvm(https://github.com/creationix/nvm) to install nodejs.
 # that counld not be loaded in mina. sorry, I don't know why.
 sudo apt-get install nodejs
 # is fine.
 ```
+
 [mina](https://github.com/nadarei/mina)
+
 ```ruby
 group :development do
   gem 'mina'
 end
 ```
+
 Step up
 ---
 copy this into your rails project.

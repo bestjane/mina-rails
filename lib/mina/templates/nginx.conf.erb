@@ -2,14 +2,14 @@
 # upstream unicorn {
 #   server unix:/tmp/unicorn.photoapp.sock fail_timeout=0;
 # }
-# 
+#
 # server {
 #   # listen 80 default deferred; # for Linux
 #   # listen 80 default accept_filter=httpready; # for FreeBSD
 #   listen 80 default;
-#   
+#
 #   # server_name example.com;
-#   
+#
 #   root /vagrant/public;
 #   try_files $uri/index.html $uri @unicorn;
 #   location @unicorn {
@@ -18,7 +18,7 @@
 #     proxy_redirect off;
 #     proxy_pass http://unicorn;
 #   }
-#   
+#
 #   error_page 500 502 503 504 /500.html;
 #   client_max_body_size 100M;
 #   keepalive_timeout 10;
@@ -31,21 +31,23 @@ upstream <%= app %>_app_server {
   server unix:<%= unicorn_socket %> fail_timeout=0;
 }
 
+log_format <%= app %>_combined '$remote_addr - $remote_user [$time_local] ($request_time sec) '
+                      '"$request" $status $body_bytes_sent '
+                      '"$http_referer" "$http_user_agent"';
+
+
 # <%= app %> Server
 server {
   listen 80<%= ' default' if address_is_ip %>; # default; # Tells nginx which site to load if host is not found. For example when using IP: http://192.168.1.54
   server_name .<%= nginx_server_name %>;
 
   root <%= deploy_to %>/<%= current_path %>/public;
-  
+
   gzip on;
   gzip_types text/plain text/xml application/xml application/xml+rss
              text/css text/javascript application/javascript application/json;
 
 <% if deploy_server != 'production' %>
-  log_format <%= app %>_combined '$remote_addr - $remote_user [$time_local] ($request_time sec) '
-                      '"$request" $status $body_bytes_sent '
-                      '"$http_referer" "$http_user_agent"';
   access_log  <%= nginx_log_path %>/access.log <%= app %>_combined;
   error_log   <%= nginx_log_path %>/error.log info;
 <% end %>
@@ -83,7 +85,7 @@ server {
     access_log off;
     log_not_found off;
   }
-  
+
   # location /attachment_files {
   #     root <%= deploy_to %>/<%= current_path %>/public/system;
   #     internal;

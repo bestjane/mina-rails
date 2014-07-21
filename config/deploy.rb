@@ -9,6 +9,7 @@ require 'mina/extras'
 require 'mina/god'
 require 'mina/unicorn'
 require 'mina/nginx'
+require 'mina/log'
 
 Dir['lib/mina/servers/*.rb'].each { |f| load f }
 
@@ -16,10 +17,9 @@ Dir['lib/mina/servers/*.rb'].each { |f| load f }
 # Common settings for all servers
 ###########################################################################
 
-set :app,                'cool_app'
-set :repository,         'https://github.com/user_name/repo_name.git'
-set :keep_releases,       9999        #=> I like to keep all my releases
-set :default_server,     :vagrant
+set :app,                'example'
+set :repository,         'git@github.com'
+set :default_server,     :production
 
 ###########################################################################
 # Tasks
@@ -28,16 +28,26 @@ set :default_server,     :vagrant
 set :server, ENV['to'] || default_server
 invoke :"env:#{server}"
 
+task :environment do
+  # If you're using rbenv, use this to load the rbenv environment.
+  # Be sure to commit your .rbenv-version to your repository.
+  # invoke :'rbenv:load'
+
+  # For those using RVM, use this to load an RVM version@gemset.
+  queue echo_cmd %[/bin/bash --login]
+end
+
 desc "Deploys the current version to the server."
-task :deploy do
+
+task :deploy => :environment do
   deploy do
     invoke :'git:clone'
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
-    # invoke :'rails:db_migrate'         # I'm using MongoDB, not AR, so I don't need those
-    # invoke :'rails:assets_precompile'  # I don't really like assets pipeline
-    
+    invoke :'rails:db_migrate'
+    invoke :'rails:assets_precompile'
     to :launch do
+      # relax, if your unicorn is not running. the unicorn.sh will change restarting to starting.
       invoke :'unicorn:restart'
     end
   end

@@ -19,7 +19,7 @@ export rvm_project_rvmrc=0
 # export rvm_gemset_create_on_use_flag=1
 export rvm_trust_rvmrcs_flag=1
 
-<%= "source #{rvm_path}" unless rvm_string.nil? %>
+<%= "[[ -s \"$HOME/.rvm/scripts/rvm\" ]] && source \"$HOME/.rvm/scripts/rvm\"" unless rvm_string.nil? %>
 cd $APP_ROOT || exit 1
 <%= "rvm use #{rvm_string}" unless rvm_string.nil? %>
 
@@ -72,7 +72,7 @@ upgrade)
 #       printf '.' && sleep 1 && n=$(( $n - 1 ))
 #     done
 #     echo
-# 
+#
 #     if test $n -lt 0 && test -s $old_pid
 #     then
 #       echo >&2 "$old_pid still exists after $TIMEOUT seconds"
@@ -103,7 +103,7 @@ esac
 # set -e
 # # Example init script, this can be used with nginx, too,
 # # since nginx and unicorn accept the same signals
-# 
+#
 # # Feel free to change any of the following variables for your app:
 # TIMEOUT=${TIMEOUT-60}
 # APP_ROOT=/vagrant
@@ -111,19 +111,19 @@ esac
 # CMD="$APP_ROOT/bin/unicorn -D -c $APP_ROOT/config/unicorn.rb -E production"
 # action="$1"
 # set -u
-# 
+#
 # old_pid="$PID.oldbin"
-# 
+#
 # cd $APP_ROOT || exit 1
-# 
+#
 # sig () {
 #   test -s "$PID" && kill -$1 `cat $PID`
 # }
-# 
+#
 # oldsig () {
 #   test -s $old_pid && kill -$1 `cat $old_pid`
 # }
-# 
+#
 # case $action in
 # start)
 #   sig 0 && echo >&2 "Already running" && exit 0
@@ -151,7 +151,7 @@ esac
 #       printf '.' && sleep 1 && n=$(( $n - 1 ))
 #     done
 #     echo
-# 
+#
 #     if test $n -lt 0 && test -s $old_pid
 #     then
 #       echo >&2 "$old_pid still exists after $TIMEOUT seconds"

@@ -1,7 +1,7 @@
-task :setup do
+task :setup => :environment do
   invoke :create_extra_paths
-  invoke :'god:setup'
-  invoke :'god:upload'
+  # invoke :'god:setup'
+  # invoke :'god:upload'
   invoke :'unicorn:upload'
   invoke :'nginx:upload'
 
@@ -15,7 +15,7 @@ end
 desc 'Invoke setup tasks, that requires sudo privileges'
 task :sudo_setup do
   invoke :sudo
-  invoke :'god:link'
+  # invoke :'god:link'
   invoke :'unicorn:link'
   invoke :'nginx:setup'
   invoke :'nginx:link'
@@ -38,7 +38,7 @@ task :create_extra_paths do
 end
 
 task :health do
-  queue 'ps aux | grep -v grep | grep -v bash | grep -e "bin\/god" -e "unicorn_rails" -e "mongod" -e "nginx" -e "redis" -e "STAT START   TIME COMMAND" -e "bash"'
+  queue 'ps aux | grep -v grep | grep -v bash | grep -e "bin\/god" -e "unicorn_rails" -e "mongod" -e "mysqld" -e "nginx" -e "redis" -e "STAT START   TIME COMMAND" -e "bash"'
 end
 
 task :sudo do
@@ -68,14 +68,14 @@ end
 def check_ownership(u, g, destination)
   %{
     file_info=(`ls -l #{destination}`)
-    if [[ -s "#{destination}" ]] && [[ ${file_info[2]} == '#{u}' ]] && [[ ${file_info[3]} == '#{g}' ]]; #{check_response}
+    if [[ -s "#{destination}" ]] && [[ ${file_info[3]} == '#{u}' ]] && [[ ${file_info[4]} == '#{g}' ]]; #{check_response}
     }
 end
 
 def check_exec_and_ownership(u, g, destination)
   %{
     file_info=(`ls -l #{destination}`)
-    if [[ -s "#{destination}" ]] && [[ -x "#{destination}" ]] && [[ ${file_info[2]} == '#{u}' ]] && [[ ${file_info[3]} == '#{g}' ]]; #{check_response}
+    if [[ -s "#{destination}" ]] && [[ -x "#{destination}" ]] && [[ ${file_info[3]} == '#{u}' ]] && [[ ${file_info[4]} == '#{g}' ]]; #{check_response}
     }
 end
 
